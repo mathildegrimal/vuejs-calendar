@@ -51,7 +51,7 @@ export default {
   methods: {
     async fetchApi() {
       const datas = await fetch(
-        "https://api.openweathermap.org/data/2.5/onecall?lat=43.610769&lon=3.876716&exclude=current,minutely,hourly,alerts&appid=8dcdaa455ecb0ec90a2a1128f2743e55",
+        `https://api.openweathermap.org/data/2.5/onecall?lat=43.610769&lon=3.876716&exclude=current,minutely,hourly,alerts&appid=${process.env.VUE_APP_API_KEY}`,
         {
           method: "GET",
         }
