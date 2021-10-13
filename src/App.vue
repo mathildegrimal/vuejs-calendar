@@ -3,14 +3,15 @@
     <EventForm
       v-if="display"
       :date="date"
-      v-on:setDisplay="onSetDisplay"
       :display="display"
+      v-on:setDisplay="onSetDisplay"
       v-on:setEvent="onSetEvent"
     />
     <CalendarGrid
       :events="events"
       v-on:setDate="onSetDate"
       v-on:setDisplay="onSetDisplay"
+      v-on:setEventToDelete="onDeleteEvent"
     />
   </div>
 </template>
@@ -35,17 +36,16 @@ export default {
 
   methods: {
     onSetEvent: function(event) {
-      console.log(event);
       this.events.push(event);
+    },
+    onDeleteEvent: function(index) {
+      this.events.splice(index, 1);
     },
     onSetDate: function(date) {
       this.date = new Date(date);
     },
     onSetDisplay: function(display) {
-      console.log("setting display on app");
-
-      this.display = !display;
-      console.log(display);
+      this.display = display;
     },
   },
 };

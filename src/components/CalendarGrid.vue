@@ -1,6 +1,11 @@
 <template>
-  <div id="calendarGrid">
-    <h1>{{ month[0].toUpperCase() + month.slice(1) }}</h1>
+  <div
+    id="calendarGrid"
+    @drop="onDrop($event)"
+    @dragover.prevent
+    @dragenter.prevent
+  >
+    <h1>{{ month[0].toUpperCase() + month.slice(1) + " " + year }}</h1>
     <div class="days-container">
       <div class="lundi">Lundi</div>
       <div class="mardi">Mardi</div>
@@ -12,15 +17,16 @@
     </div>
     <div class="card-container">
       <DayCard
-        :events="events"
-        v-for="(day, index) in days"
-        v-bind:key="index"
-        :class="day.day.toLowerCase()"
         class="card"
+        :class="day.day.toLowerCase()"
+        :events="events"
         :weather="responsedata"
+        :day="day"
+        v-for="(day, index) in days"
+        :key="index"
         v-on:setDate="onSetDate"
         v-on:setDisplay="onSetDisplay"
-        v-bind:day="day"
+        v-on:setEventToDelete="onDeleteEvent"
       />
     </div>
   </div>
@@ -37,6 +43,7 @@ export default {
     return {
       days: this.getDays(),
       month: new Date().toLocaleDateString("default", { month: "long" }),
+      year: new Date().getFullYear(),
       responsedata: {},
     };
   },
@@ -52,11 +59,19 @@ export default {
       const datasJson = await datas.json();
       this.responsedata = datasJson.daily;
     },
+    onDrop(evt) {
+      const form = evt.dataTransfer.getData("itemID");
+      const formEl = document.getElementById(form);
+      evt.target.appendChild(formEl);
+    },
+    onDeleteEvent: function(index) {
+      this.$emit("setEventToDelete", index);
+    },
     onSetDate: function(date) {
       this.$emit("setDate", date);
     },
     onSetDisplay: function(display) {
-      this.$emit("setDisplay", !display);
+      this.$emit("setDisplay", display);
     },
     getDays: function() {
       const date = new Date();
@@ -65,7 +80,7 @@ export default {
         date.getMonth() + 1,
         0
       ).getDate();
-      console.log("days in month", numberOfDaysInMonth);
+
       let days = [];
       const weekDays = [
         "Dimanche",
@@ -79,7 +94,6 @@ export default {
 
       for (let i = 1; i <= parseInt(numberOfDaysInMonth); i++) {
         let date = new Date(new Date().getFullYear(), new Date().getMonth(), i);
-        //console.log(date);
 
         days.push({
           day: weekDays[date.getDay()],
@@ -116,26 +130,19 @@ export default {
 .days-container {
   display: grid;
   width: 100%;
-  grid-template-rows: minmax(40px, 140px), repeat(6);
   grid-template-columns: repeat(7, 1fr);
-  border: 1px solid lightgrey;
+  font-weight: bold;
   grid-gap: 2px;
 }
 
-.day-name {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  background-color: white;
-  font-weight: bold;
-}
 .card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   background-color: white;
+  overflow-x: hidden;
+  overflow-y: scroll;
   height: 110px;
   padding: 3px;
 }

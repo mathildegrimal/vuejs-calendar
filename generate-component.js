@@ -14,7 +14,7 @@ fs.writeFile(
 <script>
 export default
 {
-  name: ${compName}
+  name: "${compName}",
 };
 </script>
 

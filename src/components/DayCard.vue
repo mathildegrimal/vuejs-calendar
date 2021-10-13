@@ -1,72 +1,72 @@
 <template>
   <div @click="handleToggle(day.fullDate)">
-    <div>{{ datetime }}</div>
-
-    <p class="day-number">{{ day.number }}</p>
-    <div v-for="(w, index) in weather" :key="index">
-      <div
-        v-if="
-          new Date(w.dt * 1000).getDate() ===
-            new Date(Date.parse(day.fullDate)).getDate()
-        "
-      >
-        <img width="30px" :icon="setImage(w.weather[0].icon)" :src="image" />
+    <div class="card-header">
+      <p class="day-number">{{ day.number }}</p>
+      <div v-for="(w, index) in weather" :key="index">
+        <img
+          class="weather-icon"
+          :icon="setImage(w.weather[0].icon)"
+          :src="image"
+          v-if="
+            new Date(w.dt * 1000).getDate() ===
+              new Date(Date.parse(day.fullDate)).getDate()
+          "
+        />
       </div>
     </div>
-    <div v-for="(event, index) in events" v-bind:key="index">
-      <div
-        class="event-container"
+    <div
+      class="event-container"
+      v-for="(event, index) in events"
+      :key="event + index"
+    >
+      <Event
+        :event="event"
+        :index="index"
+        v-on:setEventToDelete="onDeleteEvent"
         v-if="
           new Date(Date.parse(event.date)).getDate() ===
             new Date(Date.parse(day.fullDate)).getDate()
         "
-      >
-        <p class="event">{{ event.hour }}h : {{ event.content }}</p>
-      </div>
+      />
     </div>
   </div>
 </template>
 
 <script>
+import Event from "./Event.vue";
 export default {
   name: "DayCard",
-  components: {},
+  components: { Event },
   props: ["day", "events", "weather", "datetime"],
   data() {
     return {
       display: false,
-      icon: "",
-      dayWeather: this.getWeather(),
-      image: "",
     };
   },
   watch: {},
 
   methods: {
+    onDeleteEvent: function(index) {
+      this.$emit("setEventToDelete", index);
+    },
     setImage: function(icon) {
       const url = "http://openweathermap.org/img/wn/";
       this.image = url + icon + "@2x.png";
     },
-    getWeather() {
-      this.dayWeather = this.weather;
-    },
     handleToggle: function(date) {
       let dateToEmit = date;
-      this.display = !this.display;
-
-      console.log("setting display on daycard");
-      console.log(this.display);
       this.$emit("setDate", dateToEmit);
-      this.$emit("setDisplay", this.display);
+      this.$emit("setDisplay", !this.display);
     },
   },
-  mounted() {
-    this.getWeather();
-  },
+  mounted() {},
 };
 </script>
 
 <style scoped>
+.card-header {
+  display: flex;
+}
 .day-number {
   display: flex;
   justify-content: flex-start;
@@ -75,11 +75,8 @@ export default {
   padding: 0;
   margin: 0;
 }
-.event {
-  display: flex;
-  overflow: hidden;
-  white-space: nowrap;
-  overflow: hidden;
-  background-color: lightblue;
+
+.weather-icon {
+  width: 20px;
 }
 </style>
