@@ -46,8 +46,11 @@
 </template>
 
 <script>
+import store from "../store";
+
 export default {
   name: "EventForm",
+  store,
   props: ["date", "display"],
   components: {},
   data() {
@@ -67,16 +70,20 @@ export default {
       evt.dataTransfer.setData("itemID", evt.target.id);
     },
     addEvent: function() {
-      this.$emit("setDisplay", false);
       if (this.date != "" && this.content != "") {
+        let event1 = {
+          date: this.date,
+          hour: this.time,
+          content: this.content,
+        };
+        this.$store.commit("addEvent", event1);
         let event = {
           date: this.date,
           hour: this.time,
           content: this.content,
         };
         this.$emit("setEvent", event);
-        this.content = "";
-        this.status = "Enregistré !";
+        this.$emit("setDisplay", false);
       } else {
         this.status = "Pas de contenu";
       }
