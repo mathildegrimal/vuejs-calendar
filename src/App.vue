@@ -13,7 +13,7 @@
       v-on:setDisplay="onSetDisplay"
       v-on:setEventToDelete="onDeleteEvent"
     />
-    <button @click="addEvent">add Event</button>
+    <button @click="addEvent('toto')">add Event</button>
     <div>{{ eventsByDate }}</div>
   </div>
 </template>
@@ -21,6 +21,8 @@
 <script>
 import CalendarGrid from "./components/CalendarGrid.vue";
 import EventForm from "./components/EventForm.vue";
+import { mapGetters, mapMutations } from "vuex";
+
 import store from "./store";
 export default {
   name: "App",
@@ -30,9 +32,9 @@ export default {
     EventForm,
   },
   computed: {
-    eventsByDate() {
-      return this.$store.getters.getEvents;
-    },
+    ...mapGetters("event", {
+      eventsByDate: "getEvents",
+    }),
   },
   data() {
     return {
@@ -43,10 +45,7 @@ export default {
   },
 
   methods: {
-    addEvent() {
-      let event = { id: 3, date: "2021-10-04", hour: "22", content: "text 3" };
-      return this.$store.commit("addEvent", event);
-    },
+    ...mapMutations("event", ["addEvent"]),
     onSetEvent: function(event) {
       this.events.push(event);
     },

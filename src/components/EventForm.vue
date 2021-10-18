@@ -47,6 +47,7 @@
 
 <script>
 import store from "../store";
+import { mapMutations } from "vuex";
 
 export default {
   name: "EventForm",
@@ -64,11 +65,13 @@ export default {
   computed: {},
 
   methods: {
+    ...mapMutations("event", ["addEvent"]),
     startDrag: (evt) => {
       evt.dataTransfer.dropEffect = "move";
       evt.dataTransfer.effectAllowed = "move";
       evt.dataTransfer.setData("itemID", evt.target.id);
     },
+
     addEvent: function() {
       if (this.date != "" && this.content != "") {
         let event1 = {
@@ -76,7 +79,8 @@ export default {
           hour: this.time,
           content: this.content,
         };
-        this.$store.commit("addEvent", event1);
+
+        this.$store.event.commit("addEvent", event1);
         let event = {
           date: this.date,
           hour: this.time,
