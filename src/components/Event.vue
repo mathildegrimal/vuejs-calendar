@@ -23,10 +23,12 @@
 
 <script>
 import { mapMutations } from "vuex";
+import store from "../store";
 
 export default {
   name: "Event",
   components: {},
+  store,
   props: ["event", "index"],
   methods: {
     ...mapMutations("event", ["deleteEvent"]),

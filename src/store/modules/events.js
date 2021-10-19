@@ -1,7 +1,7 @@
 // initial state
-// shape: [{ id, quantity }]
 const state = () => ({
   events: [],
+  date: new Date(),
 });
 
 // getters
@@ -14,6 +14,42 @@ const getters = {
     );
 
     return result;
+  },
+  getMonth: (state) => {
+    let month = state.date.toLocaleDateString("default", { month: "long" });
+    return month;
+  },
+  getDate: (state) => {
+    return state.date;
+  },
+  getDays: (state) => {
+    const numberOfDaysInMonth = new Date(
+      state.date.getFullYear(),
+      state.date.getMonth() + 1,
+      0
+    ).getDate();
+
+    let days = [];
+    const weekDays = [
+      "Dimanche",
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+    ];
+
+    for (let i = 1; i <= parseInt(numberOfDaysInMonth); i++) {
+      let date = new Date(state.date.getFullYear(), state.date.getMonth(), i);
+
+      days.push({
+        day: weekDays[date.getDay()],
+        number: date.getDate(),
+        fullDate: date,
+      });
+    }
+    return days;
   },
 };
 
@@ -33,6 +69,15 @@ const mutations = {
   },
   deleteEvent: (state, index) => {
     state.events.splice(index, 1);
+  },
+  changeMonth: (state, value) => {
+    state.date = new Date(
+      state.date.getFullYear(),
+      state.date.getMonth() + value
+    );
+
+    let newMonth = state.date.toLocaleDateString("default", { month: "long" });
+    return newMonth;
   },
 };
 
