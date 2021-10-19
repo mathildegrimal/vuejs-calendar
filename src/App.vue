@@ -22,9 +22,6 @@ export default {
     ...mapGetters("display", {
       display: "getDisplay",
     }),
-    ...mapGetters("event", {
-      events: "getEvents",
-    }),
   },
   data() {
     return {

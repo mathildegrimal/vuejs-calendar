@@ -6,9 +6,6 @@ const state = () => ({
 
 // getters
 const getters = {
-  getEvents: (state) => {
-    return state.events;
-  },
   getEventsByDate: (state) => (date) => {
     let result = state.events.filter(
       (event) =>
