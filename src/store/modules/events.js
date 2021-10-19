@@ -9,21 +9,29 @@ const getters = {
   getEvents: (state) => {
     return state.events;
   },
-  getEventsByDate: (state, date) => {
-    return state.events.filter(
+  getEventsByDate: (state) => (date) => {
+    let result = state.events.filter(
       (event) =>
         new Date(Date.parse(event.date)).getDate() ===
         new Date(Date.parse(date)).getDate()
     );
+
+    return result;
   },
 };
 
 // actions
-const actions = {};
+const actions = {
+  addEventToEvents({ commit }, event) {
+    if (event.date !== "" && event.content !== "") {
+      commit("pushEventToEvents", event);
+    }
+  },
+};
 
 // mutations
 const mutations = {
-  addEvent: (state, event) => {
+  pushEventToEvents: (state, event) => {
     state.events.push(event);
   },
   deleteEvent: (state, index) => {

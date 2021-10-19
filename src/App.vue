@@ -1,27 +1,14 @@
 <template>
   <div id="app">
-    <EventForm
-      v-if="display"
-      :date="date"
-      :display="display"
-      v-on:setDisplay="onSetDisplay"
-      v-on:setEvent="onSetEvent"
-    />
-    <CalendarGrid
-      :events="events"
-      v-on:setDate="onSetDate"
-      v-on:setDisplay="onSetDisplay"
-      v-on:setEventToDelete="onDeleteEvent"
-    />
-    <button @click="addEvent('toto')">add Event</button>
-    <div>{{ eventsByDate }}</div>
+    <EventForm v-if="display" />
+    <CalendarGrid />
   </div>
 </template>
 
 <script>
 import CalendarGrid from "./components/CalendarGrid.vue";
 import EventForm from "./components/EventForm.vue";
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 import store from "./store";
 export default {
@@ -32,32 +19,21 @@ export default {
     EventForm,
   },
   computed: {
+    ...mapGetters("display", {
+      display: "getDisplay",
+    }),
     ...mapGetters("event", {
-      eventsByDate: "getEvents",
+      events: "getEvents",
     }),
   },
   data() {
     return {
       date: "",
-      display: false,
-      events: [],
     };
   },
 
   methods: {
-    ...mapMutations("event", ["addEvent"]),
-    onSetEvent: function(event) {
-      this.events.push(event);
-    },
-    onDeleteEvent: function(index) {
-      this.events.splice(index, 1);
-    },
-    onSetDate: function(date) {
-      this.date = new Date(date);
-    },
-    onSetDisplay: function(display) {
-      this.display = display;
-    },
+    ...mapActions("event", ["addEventToEvents", event]),
   },
 };
 </script>

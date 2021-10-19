@@ -24,9 +24,6 @@
         :day="day"
         v-for="(day, index) in days"
         :key="index"
-        v-on:setDate="onSetDate"
-        v-on:setDisplay="onSetDisplay"
-        v-on:setEventToDelete="onDeleteEvent"
       />
     </div>
   </div>
@@ -63,15 +60,6 @@ export default {
       const form = evt.dataTransfer.getData("itemID");
       const formEl = document.getElementById(form);
       evt.target.appendChild(formEl);
-    },
-    onDeleteEvent: function(index) {
-      this.$emit("setEventToDelete", index);
-    },
-    onSetDate: function(date) {
-      this.$emit("setDate", date);
-    },
-    onSetDisplay: function(display) {
-      this.$emit("setDisplay", display);
     },
     getDays: function() {
       const date = new Date();

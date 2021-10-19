@@ -8,7 +8,7 @@
   >
     <div class="close-icon">
       <svg
-        @click="$emit('setDisplay', false)"
+        @click="setDisplay()"
         width="20"
         height="20"
         viewBox="0 0 20 20"
@@ -25,72 +25,55 @@
     </div>
     <div class="datetime">
       <h2>Date :</h2>
-      <input
-        type="date"
-        :value="
-          date &&
-            new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000)
-              .toISOString()
-              .split('T00:00:00.000Z')[0]
-        "
-      />
+      <input type="date" :value="date" />
       <input type="time" v-model="time" />
     </div>
     <h2>Description :</h2>
-    <textarea v-model="content"></textarea>
-    <button class="button" @click="addEvent">
+    <textarea :placeholder="placeholder" v-model="content"></textarea>
+    <button
+      class="button"
+      @click="
+        addEventToEvents({ date, time, content });
+        setStatusAndDisplay(content);
+      "
+    >
       Enregistrer
     </button>
-    <div>{{ status }}</div>
+    <div>{{ status.status }}</div>
   </div>
 </template>
 
 <script>
 import store from "../store";
-import { mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "EventForm",
   store,
-  props: ["date", "display"],
   components: {},
   data() {
     return {
       content: "",
-      status: "",
+      placeholder: "Entrez ici la description de votre événement",
       time: "08:00",
     };
   },
-
-  computed: {},
+  computed: {
+    ...mapGetters("display", {
+      display: "getDisplay",
+      date: "getDate",
+      status: "getStatus",
+    }),
+  },
 
   methods: {
-    ...mapMutations("event", ["addEvent"]),
+    ...mapActions("event", ["addEventToEvents"]),
+    ...mapActions("display", ["setStatusAndDisplay"]),
+    ...mapMutations("display", ["setDisplay"]),
     startDrag: (evt) => {
       evt.dataTransfer.dropEffect = "move";
       evt.dataTransfer.effectAllowed = "move";
       evt.dataTransfer.setData("itemID", evt.target.id);
-    },
-
-    addEvent: function() {
-      if (this.date != "" && this.content != "") {
-        let event1 = {
-          date: this.date,
-          hour: this.time,
-          content: this.content,
-        };
-
-        this.$store.event.commit("addEvent", event1);
-        let event = {
-          date: this.date,
-          hour: this.time,
-          content: this.content,
-        };
-        this.$emit("setEvent", event);
-        this.$emit("setDisplay", false);
-      } else {
-        this.status = "Pas de contenu";
-      }
     },
   },
   mounted() {},

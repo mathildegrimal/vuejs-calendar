@@ -1,7 +1,7 @@
 <template>
   <div class="event">
     <svg
-      @click="deleteEvent"
+      @click.stop.prevent="deleteEvent(index)"
       class="delete-icon"
       width="15"
       height="15"
@@ -16,22 +16,20 @@
         clip-rule="evenodd"
       ></path>
     </svg>
-    <div>{{ event.hour }}h :</div>
+    <div>{{ event.time }}h :</div>
     <div>{{ event.content }}</div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   name: "Event",
   components: {},
   props: ["event", "index"],
   methods: {
-    deleteEvent() {
-      event.preventDefault();
-      event.stopPropagation();
-      this.$emit("setEventToDelete", this.index);
-    },
+    ...mapMutations("event", ["deleteEvent"]),
   },
 };
 </script>

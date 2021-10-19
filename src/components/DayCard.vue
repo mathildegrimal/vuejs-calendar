@@ -1,5 +1,10 @@
 <template>
-  <div @click="handleToggle(day.fullDate)">
+  <div
+    @click="
+      setDisplay();
+      setDate(day.fullDate);
+    "
+  >
     <div class="card-header">
       <p class="day-number">{{ day.number }}</p>
       <div v-for="(w, index) in weather" :key="index">
@@ -19,44 +24,38 @@
       v-for="(event, index) in events"
       :key="event + index"
     >
-      <Event
-        :event="event"
-        :index="index"
-        v-on:setEventToDelete="onDeleteEvent"
-        v-if="
-          new Date(Date.parse(event.date)).getDate() ===
-            new Date(Date.parse(day.fullDate)).getDate()
-        "
-      />
+      <Event :event="event" />
     </div>
   </div>
 </template>
 
 <script>
 import Event from "./Event.vue";
+import store from "../store";
+
+import { mapMutations, mapGetters } from "vuex";
+
 export default {
   name: "DayCard",
+  store,
   components: { Event },
-  props: ["day", "events", "weather", "datetime"],
+  props: ["day", "weather", "datetime"],
   data() {
-    return {
-      display: false,
-    };
+    return {};
   },
-  watch: {},
-
-  methods: {
-    onDeleteEvent: function(index) {
-      this.$emit("setEventToDelete", index);
+  computed: {
+    ...mapGetters({ getEventsByDate: "event/getEventsByDate" }),
+    events() {
+      const events = this.getEventsByDate(this.day.fullDate);
+      return events;
     },
+  },
+  methods: {
+    ...mapMutations("display", ["setDisplay", "setDate"]),
+
     setImage: function(icon) {
       const url = "http://openweathermap.org/img/wn/";
       this.image = url + icon + "@2x.png";
-    },
-    handleToggle: function(date) {
-      let dateToEmit = date;
-      this.$emit("setDate", dateToEmit);
-      this.$emit("setDisplay", !this.display);
     },
   },
   mounted() {},
