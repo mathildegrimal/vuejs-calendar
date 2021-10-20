@@ -180,11 +180,15 @@ export default {
   align-items: flex-start;
   justify-content: flex-start;
   background-color: white;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
   height: 110px;
   padding: 3px;
 }
+
+.card:hover {
+}
+
 .lundi {
   grid-column: 1;
 }

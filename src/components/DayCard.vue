@@ -24,7 +24,7 @@
       v-for="(event, index) in events"
       :key="event + index"
     >
-      <Event :event="event" />
+      <Event :event="event" :index="index" />
     </div>
   </div>
 </template>

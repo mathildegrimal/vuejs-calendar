@@ -1,7 +1,7 @@
 <template>
   <div class="event">
     <svg
-      @click.stop.prevent="deleteEvent(index)"
+      @click.stop.prevent="deleteEvent(event.id)"
       class="delete-icon"
       width="15"
       height="15"
@@ -29,7 +29,7 @@ export default {
   name: "Event",
   components: {},
   store,
-  props: ["event", "index"],
+  props: ["event"],
   methods: {
     ...mapMutations("event", ["deleteEvent"]),
   },
@@ -40,7 +40,6 @@ export default {
 .event {
   display: flex;
   align-items: center;
-  overflow: hidden;
   white-space: nowrap;
   background-color: lightblue;
 }

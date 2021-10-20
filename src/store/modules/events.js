@@ -2,6 +2,7 @@
 const state = () => ({
   events: [],
   date: new Date(),
+  eventToEdit: { date: "", time: "", content: "" },
 });
 
 // getters
@@ -10,7 +11,11 @@ const getters = {
     let result = state.events.filter(
       (event) =>
         new Date(Date.parse(event.date)).getDate() ===
-        new Date(Date.parse(date)).getDate()
+          new Date(Date.parse(date)).getDate() &&
+        new Date(Date.parse(event.date)).getFullYear() ===
+          new Date(Date.parse(date)).getFullYear() &&
+        new Date(Date.parse(event.date)).getMonth() ===
+          new Date(Date.parse(date)).getMonth()
     );
 
     return result;
@@ -65,10 +70,15 @@ const actions = {
 // mutations
 const mutations = {
   pushEventToEvents: (state, event) => {
-    state.events.push(event);
+    let id = 0;
+    if (state.events.length != 0) {
+      id = state.events[state.events.length - 1].id + 1;
+    }
+    state.events.push({ id: id, ...event });
   },
   deleteEvent: (state, index) => {
-    state.events.splice(index, 1);
+    const indexToDelete = state.events.findIndex((event) => event.id == index);
+    state.events.splice(indexToDelete, 1);
   },
   changeMonth: (state, value) => {
     state.date = new Date(
